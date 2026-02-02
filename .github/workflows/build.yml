@@ -19,6 +19,6 @@ jobs:
         shell: alpine.sh --root {0}
         run: |
             mkdir -p /opt/core
-            ln -sfn ./core /opt/core
+            ln -s core /opt/core
             cd /opt/core
             sh go-build.sh

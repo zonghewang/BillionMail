@@ -19,7 +19,7 @@ jobs:
         shell: alpine.sh --root {0}
         run: |
             mkdir -p /opt/core
-            ln -s ./core /opt/core
+            ln -s ./core /opt/
             ls /opt/core
             echo "------------------------------------------"
             ls ./core 

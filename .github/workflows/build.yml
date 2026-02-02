@@ -17,7 +17,7 @@ jobs:
           branch: v3.20
       - name: create ln
         run: |
-            ln -s ./core /opt
+            ln -snf ./core /opt
             ls /opt/core/
             echo "------------------------------------------"
             ls ./core 

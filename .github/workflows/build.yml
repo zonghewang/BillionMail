@@ -16,7 +16,8 @@ jobs:
         with:
           branch: v3.20
       - name: run build with alpine
-        shell: alpine.sh {0}
+        shell: alpine.sh --root {0}
         run: |
-            cd core
+            ln -s core /opt/core
+            cd /opt/core
             sh go-build.sh

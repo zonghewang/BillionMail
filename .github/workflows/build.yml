@@ -18,7 +18,7 @@ jobs:
       - name: create ln
         run: |
             ln -s ./core /opt
-            ls /opt/core
+            ls /opt/core/
             echo "------------------------------------------"
             ls ./core 
       - name: run build with alpine

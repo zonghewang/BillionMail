@@ -9,6 +9,8 @@ jobs:
   build:
     name: build image
     runs-on: ubuntu-latest
+    env:
+      BASE_WORKSPACE: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v5
       - name: init alpine
@@ -17,7 +19,7 @@ jobs:
           branch: v3.20
       - name: create ln
         run: |
-            ln -snf ./core /opt
+            ln -snf ${{ env.BASE_WORKSPACE }}/core /opt
             ls /opt/core/
             echo "------------------------------------------"
             ls ./core 

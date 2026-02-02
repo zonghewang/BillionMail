@@ -18,4 +18,5 @@ jobs:
       - name: run build with alpine
         shell: alpine.sh {0}
         run: |
-            cat /etc/alpine-release
+            cd core
+            sh go-build.sh

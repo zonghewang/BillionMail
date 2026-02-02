@@ -18,6 +18,7 @@ jobs:
       - name: run build with alpine
         shell: alpine.sh --root {0}
         run: |
-            ln -s ./core /opt/core
+            mkdir -p /opt/core
+            ln -sfn ./core /opt/core
             cd /opt/core
             sh go-build.sh

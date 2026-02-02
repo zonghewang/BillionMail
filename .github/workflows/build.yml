@@ -18,7 +18,6 @@ jobs:
       - name: run build with alpine
         shell: alpine.sh --root {0}
         run: |
-            mkdir -p /opt/core
             ln -s ./core /opt/
             ls /opt/core
             echo "------------------------------------------"

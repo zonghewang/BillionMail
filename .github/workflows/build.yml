@@ -15,12 +15,14 @@ jobs:
         uses: jirutka/setup-alpine@v1
         with:
           branch: v3.20
-      - name: run build with alpine
-        shell: alpine.sh --root {0}
+      - name: create ln
         run: |
             ln -s ./core /opt
             ls /opt/core
             echo "------------------------------------------"
             ls ./core 
+      - name: run build with alpine
+        shell: alpine.sh --root {0}
+        run: |
             cd /opt/core
             sh go-build.sh

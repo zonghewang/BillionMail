@@ -19,6 +19,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
+      packages: write
     steps:
       - uses: actions/checkout@v5
       - name: init alpine

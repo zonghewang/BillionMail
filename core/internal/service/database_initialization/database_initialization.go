@@ -14,7 +14,13 @@ var registeredHandlers = make([]func(), 0, 256)
 
 // InitDatabase initializes the database configuration
 func InitDatabase() (err error) {
+	dbType, err := public.DockerEnv("DB_TYPE")
+	dbHost, err := public.DockerEnv("DB_HOST")
+	dbName, err := public.DockerEnv("DBNAME")
+	dbPort, err := public.DockerEnv("DB_PORT")
+	dbUser, err := public.DockerEnv("DBUSER")
 	dbPass, err := public.DockerEnv("DBPASS")
+	
 
 	if err != nil {
 		return fmt.Errorf("Read database password failed: %v", err)
@@ -25,11 +31,12 @@ func InitDatabase() (err error) {
 		"default": gdb.ConfigGroup{
 			gdb.ConfigNode{
 				// Debug: true,
-				Host:             public.AbsPath(consts.POSTGRESQL_SOCK),
-				User:             "billionmail",
+				Host:             dbHost,
+				Port:             dbPort,
+				User:             dbUser,
 				Pass:             dbPass,
-				Name:             "billionmail",
-				Type:             "pgsql",
+				Name:             dbName,
+				Type:             dbType,
 				Role:             "master",
 				MaxOpenConnCount: 100,
 			},

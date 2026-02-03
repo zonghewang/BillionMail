@@ -32,8 +32,9 @@ RUN   mkdir -p /etc/apt/keyrings \
   vim-tiny \
   lua-cjson \
   cron \
-  supervisor \
-  && apt-get --no-install-recommends install -y rspamd \
+  supervisor 
+
+  RUN    apt-get --no-install-recommends install -y rspamd \
   && rm -rf /var/lib/apt/lists/* /tmp/*\
   && apt-get autoremove --purge \
   && apt-get clean \

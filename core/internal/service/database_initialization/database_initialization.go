@@ -1,7 +1,7 @@
 package database_initialization
 
 import (
-	"billionmail-core/internal/consts"
+	// "billionmail-core/internal/consts"
 	"billionmail-core/internal/service/public"
 	"context"
 	"fmt"

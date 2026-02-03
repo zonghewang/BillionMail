@@ -15,11 +15,11 @@ COPY rotate_log.sh /rotate_log.sh
 
 
 RUN  apt-get update \
-  && apt-get install -y lsb-release wget gpg &&  mkdir -p /etc/apt/keyrings \
-  && wget -O- https://rspamd.com/apt-stable/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/rspamd.gpg > /dev/null \
-  &&  CODENAME=$(lsb_release -c -s) \
-  &&  echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee /etc/apt/sources.list.d/rspamd.list \
-  &&  echo "deb-src [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee -a /etc/apt/sources.list.d/rspamd.list 
+  && apt-get install -y lsb-release wget gpg &&  mkdir -p /etc/apt/keyrings 
+RUN  wget -O- https://rspamd.com/apt-stable/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/rspamd.gpg > /dev/null 
+RUN   CODENAME=$(lsb_release -c -s) 
+RUN   echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee /etc/apt/sources.list.d/rspamd.list 
+RUN   echo "deb-src [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee -a /etc/apt/sources.list.d/rspamd.list 
 RUN  apt-get update && apt-get install -y \
   tzdata \
   ca-certificates \

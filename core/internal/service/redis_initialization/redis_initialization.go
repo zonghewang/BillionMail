@@ -32,7 +32,9 @@ func InitRedis() (err error) {
 	if public.IsRunningInContainer() {
 		address = "redis:6379"
 	}
-    address, err := public.DockerEnv("REDIS_HOST")+":"+public.DockerEnv("REDIS_PORT")
+    address, err := public.DockerEnv("REDIS_HOST")
+	address += ":"
+	address, err += public.DockerEnv("REDIS_PORT")
 	// Initialize Redis configuration
 	gredis.SetConfig(&gredis.Config{
 		Address: address,

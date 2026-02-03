@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BASE_WORKSPACE: ${{ github.workspace }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v5
       - name: init alpine

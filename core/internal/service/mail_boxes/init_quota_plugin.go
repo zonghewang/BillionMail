@@ -180,15 +180,25 @@ func recreateSqlConf(confRoot string) error {
 	dbName, _ := public.DockerEnv("DBNAME")
 	dbUser, _ := public.DockerEnv("DBUSER")
 
-	content := fmt.Sprintf(`driver = pgsql
-connect = host=pgsql dbname=%s user=%s password=%s
+	dbType, _  := public.DockerEnv("DB_TYPE")
+	dbHost, _  := public.DockerEnv("DB_HOST")
+	dbName, _  := public.DockerEnv("DBNAME")
+	dbPort, _  := public.DockerEnv("DB_PORT")
+	dbUser, _  := public.DockerEnv("DBUSER")
+	dbPass, _  := public.DockerEnv("DBPASS")
+
+	
+	port=3306
+
+	content := fmt.Sprintf(`driver = %s 
+connect = host=%s dbname=%s user=%s password=%s port=%s 
 
 default_pass_scheme = MD5-CRYPT
 
 user_query = SELECT '/var/vmail/%%d/%%n' as home, 'maildir:/var/vmail/%%d/%%n' as mail, 150 AS uid, 8 AS gid, 'maildir:storage=' || quota AS quota FROM mailbox WHERE username = '%%u' AND active = 1
 
 password_query = SELECT username as user, password, '/var/vmail/%%d/%%n' as userdb_home, 'maildir:/var/vmail/%%d/%%n' as userdb_mail, 150 as userdb_uid, 8 as userdb_gid FROM mailbox WHERE username = '%%u' AND active = 1
-`, dbName, dbUser, dbPass)
+`, dbType, dbHost, dbName, dbUser, dbPass, dbPort)
 
 	err := ioutil.WriteFile(path, []byte(content), 0644)
 	if err != nil {

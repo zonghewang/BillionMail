@@ -176,10 +176,6 @@ func recreateSqlConf(confRoot string) error {
 	//	return fmt.Errorf("read back dovecot-sql.conf.ext failed: %w", err)
 	//}
 
-	dbPass, _ := public.DockerEnv("DBPASS")
-	dbName, _ := public.DockerEnv("DBNAME")
-	dbUser, _ := public.DockerEnv("DBUSER")
-
 	dbType, _  := public.DockerEnv("DB_TYPE")
 	dbHost, _  := public.DockerEnv("DB_HOST")
 	dbName, _  := public.DockerEnv("DBNAME")

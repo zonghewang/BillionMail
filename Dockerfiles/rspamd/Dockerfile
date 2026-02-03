@@ -19,8 +19,8 @@ RUN  apt-get update \
   && wget -O- https://rspamd.com/apt-stable/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/rspamd.gpg > /dev/null \
   &&  CODENAME=$(lsb_release -c -s) \
   &&  echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee /etc/apt/sources.list.d/rspamd.list \
-  &&  echo "deb-src [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee -a /etc/apt/sources.list.d/rspamd.list \
-  && apt-get update && apt-get install -y \
+  &&  echo "deb-src [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee -a /etc/apt/sources.list.d/rspamd.list 
+RUN  apt-get update && apt-get install -y \
   tzdata \
   ca-certificates \
   gnupg2 \

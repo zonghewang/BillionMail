@@ -28,9 +28,7 @@ RUN apt-get update && apt-get install -y \
   lua-cjson \
   cron \
   supervisor \
-  && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
-  && wget -O /tmp/${RSPAMD_VER}~${CODENAME}_${arch}.deb https://rspamd.com/apt-stable/pool/main/r/rspamd/${RSPAMD_VER}~${CODENAME}_${arch}.deb \
-  && apt install -y /tmp/${RSPAMD_VER}~${CODENAME}_${arch}.deb \
+  && apt-get --no-install-recommends install rspamd \
   && rm -rf /var/lib/apt/lists/* /tmp/*\
   && apt-get autoremove --purge \
   && apt-get clean \

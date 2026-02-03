@@ -14,7 +14,8 @@ COPY rotate_log.sh /rotate_log.sh
 # COPY debian.sources /etc/apt/sources.list.d/debian.sources
 
 
-RUN   mkdir -p /etc/apt/keyrings \
+RUN  apt-get update \
+  && apt-get install -y lsb-release wget gpg &&  mkdir -p /etc/apt/keyrings \
   && wget -O- https://rspamd.com/apt-stable/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/rspamd.gpg > /dev/null \
   &&  CODENAME=$(lsb_release -c -s) \
   &&  echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee /etc/apt/sources.list.d/rspamd.list \

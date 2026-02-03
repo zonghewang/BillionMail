@@ -29,7 +29,7 @@ jobs:
             echo "------------------------------------------"
             ls ./core 
             cd /opt/core
-            sh go-build.sh amd64
+            sh go-build.sh x86
       - name: build docker image
         run: |
             docker build . --file Dockerfiles/core/Dockerfile --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}

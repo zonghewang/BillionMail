@@ -714,24 +714,35 @@ func ensurePostfixRelayConfig(mainCfPath string, enableRelay bool) error {
 
 // createPostfixSqlConfigFile
 func createPostfixSqlConfigFile() error {
-	dbpass, _ := public.DockerEnv("DBPASS")
-	dbname, _ := public.DockerEnv("DBNAME")
-	dbuser, _ := public.DockerEnv("DBUSER")
+	
+	dbType, _  := public.DockerEnv("DB_TYPE")
+	dbHost, _  := public.DockerEnv("DB_HOST")
+	dbName, _  := public.DockerEnv("DBNAME")
+	dbPort, _  := public.DockerEnv("DB_PORT")
+	dbUser, _  := public.DockerEnv("DBUSER")
+	dbPass, _  := public.DockerEnv("DBPASS")
+
+	dbhosts := ""
+	switch dbType {
+	case "pgsql":
+		dbhosts = fmt.Sprintf("postgresql://%s:%s", dbHost, dbPort)
+		break;
+	}
 
 	sqlConfigFiles := map[string]string{
 		"pgsql_sender_relay_maps.cf": fmt.Sprintf(`user = %s
 password = %s
-hosts = pgsql
+hosts = %s
 dbname = %s
 
-query = SELECT CONCAT('[', rc.relay_host, ']:', rc.relay_port) FROM bm_relay_config rc JOIN bm_relay_domain_mapping rdm ON rc.id = rdm.relay_id WHERE rdm.sender_domain = REPLACE('%%s', '@', '') AND rc.active = 1 LIMIT 1`, dbuser, dbpass, dbname),
+query = SELECT CONCAT('[', rc.relay_host, ']:', rc.relay_port) FROM bm_relay_config rc JOIN bm_relay_domain_mapping rdm ON rc.id = rdm.relay_id WHERE rdm.sender_domain = REPLACE('%%s', '@', '') AND rc.active = 1 LIMIT 1`, dbUser, dbPass,dbhosts, dbName),
 
 		"pgsql_sender_transport_maps.cf": fmt.Sprintf(`user = %s
 password = %s
-hosts = pgsql
+hosts = %s
 dbname = %s
 
-query = SELECT CONCAT(smtp_name, ':') FROM bm_domain_smtp_transport WHERE domain = '%%s' LIMIT 1`, dbuser, dbpass, dbname),
+query = SELECT CONCAT(smtp_name, ':') FROM bm_domain_smtp_transport WHERE domain = '%%s' LIMIT 1`, dbUser, dbPass,dbhosts, dbName),
 	}
 
 	sqlDir := path.Join(postfixConfigDir, "sql")

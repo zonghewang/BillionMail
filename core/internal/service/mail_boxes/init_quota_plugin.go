@@ -183,9 +183,6 @@ func recreateSqlConf(confRoot string) error {
 	dbUser, _  := public.DockerEnv("DBUSER")
 	dbPass, _  := public.DockerEnv("DBPASS")
 
-	
-	port=3306
-
 	content := fmt.Sprintf(`driver = %s 
 connect = host=%s dbname=%s user=%s password=%s port=%s 
 

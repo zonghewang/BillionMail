@@ -6,7 +6,7 @@ on:
   
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/billionmail-core:latest
+  IMAGE_NAME: zonghewang/billionmail/core:latest
 
 jobs:
 

@@ -17,8 +17,8 @@ if ! grep -q "rotate_log.sh" /var/spool/cron/crontabs/root; then
 fi
 
 cat <<EOF > /etc/dovecot/conf.d/dovecot-sql.conf.ext
-driver = pgsql
-connect = host=pgsql dbname=${DBNAME} user=${DBUSER} password=${DBPASS}
+driver = ${DB_TYPE}
+connect = host=${DB_HOST} dbname=${DBNAME} user=${DBUSER} password=${DBPASS} port=${DB_PORT}
 
 default_pass_scheme = MD5-CRYPT
 

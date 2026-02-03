@@ -9,12 +9,19 @@ if ! grep -q "rotate_log.sh" /var/spool/cron/crontabs/root; then
     chown root:crontab /var/spool/cron/crontabs/root     
     /usr/bin/supervisorctl restart cron
 fi
+hosts= ""
+
+case ${DB_TYPE} in
+  pgsql)
+    hosts="postgresql://${DB_HOST}:${DB_PORT}"
+  ;;
+esac
 
 cat <<EOF > /etc/postfix/btrule.cf
 
 user = ${DBUSER}
 password = ${DBPASS}
-hosts = pgsql
+hosts = ${hosts}
 dbname = ${DBNAME}
 
 query = select s.goto from( select address, goto, 1 as stype from alias union select username,username,2 as stype from mailbox union select address, goto, 3 as stype from alias_domain a left join alias b on b.address = '@' || a.alias_domain and a.alias_domain ='%d' order by stype) s where s.address='%s' or s.stype=3 limit 0,1
@@ -25,7 +32,7 @@ cat <<EOF > /etc/postfix/sql/pgsql_virtual_alias_domain_catchall_maps.cf
 
 user = ${DBUSER}
 password = ${DBPASS}
-hosts = pgsql
+hosts = ${hosts}
 dbname = ${DBNAME}
 
 query = SELECT goto FROM alias,alias_domain WHERE alias_domain.alias_domain = '%d' and alias.address = '@' || alias_domain.target_domain AND alias.active = 1 AND alias_domain.active = 1
@@ -35,7 +42,7 @@ EOF
 cat <<EOF > /etc/postfix/sql/pgsql_virtual_alias_domain_mailbox_maps.cf
 user = ${DBUSER}
 password = ${DBPASS}
-hosts = pgsql
+hosts = ${hosts}
 dbname = ${DBNAME}
 
 query = SELECT maildir FROM mailbox,alias_domain WHERE alias_domain.alias_domain = '%d' and mailbox.username = '%u' || '@' || alias_domain.target_domain AND mailbox.active = 1 AND alias_domain.active = 1
@@ -45,7 +52,7 @@ EOF
 cat <<EOF > /etc/postfix/sql/pgsql_virtual_alias_domain_maps.cf
 user = ${DBUSER}
 password = ${DBPASS}
-hosts = pgsql
+hosts = ${hosts}
 dbname = ${DBNAME}
 
 query = SELECT goto FROM alias,alias_domain WHERE alias_domain.alias_domain = '%d' and alias.address = '%u' || '@' || alias_domain.target_domain AND alias.active = 1 AND alias_domain.active = 1
@@ -56,7 +63,7 @@ EOF
 cat <<EOF > /etc/postfix/sql/pgsql_virtual_alias_maps.cf
 user = ${DBUSER}
 password = ${DBPASS}
-hosts = pgsql
+hosts = ${hosts}
 dbname = ${DBNAME}
 
 query = (select username from mailbox where username like '%s' and active = 1 limit 1) union (select goto from alias where address like '%s' and active = 1 limit 1)
@@ -68,7 +75,7 @@ EOF
 cat <<EOF > /etc/postfix/sql/pgsql_virtual_domains_maps.cf
 user = ${DBUSER}
 password = ${DBPASS}
-hosts = pgsql
+hosts = ${hosts}
 dbname = ${DBNAME}
 
 query = SELECT domain FROM domain WHERE domain='%s' AND active = 1
@@ -80,7 +87,7 @@ EOF
 cat <<EOF > /etc/postfix/sql/pgsql_virtual_mailbox_maps.cf
 user = ${DBUSER}
 password = ${DBPASS}
-hosts = pgsql
+hosts = ${hosts}
 dbname = ${DBNAME}
 
 query = SELECT maildir FROM mailbox WHERE username='%s' AND active = 1

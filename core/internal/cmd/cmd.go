@@ -22,6 +22,7 @@ import (
 	"billionmail-core/internal/controller/settings"
 	"billionmail-core/internal/controller/subscribe_list"
 	"billionmail-core/internal/controller/tags"
+	video_outreach_ctrl "billionmail-core/internal/controller/video_outreach"
 	"billionmail-core/internal/service/database_initialization"
 	docker "billionmail-core/internal/service/dockerapi"
 	"billionmail-core/internal/service/maillog_stat"
@@ -112,6 +113,10 @@ var (
 					}
 				}
 			}
+			if public.HostWorkDir == "" {
+				public.HostWorkDir = public.AbsPath("../")
+				g.Log().Warning(ctx, "HostWorkDir not found via Docker label, using fallback: ", public.HostWorkDir)
+			}
 
 			// Operation log type
 			public.LogTypeMap = consts.GetLogTypeMap()
@@ -178,7 +183,7 @@ var (
 							return
 						}
 
-						if !r.IsFileRequest() && !strings.HasPrefix(r.URL.Path, "/api/") {
+						if r.IsFileRequest() {
 							return
 						}
 
@@ -236,7 +241,7 @@ var (
 				group.Middleware(rbac2.JWT().JWTAuthMiddleware)
 
 				// Add RBAC middleware
-				// group.Middleware(middlewares.NewRBACMiddleware().PermissionCheck)
+				group.Middleware(middlewares.NewRBACMiddleware().PermissionCheck)
 
 				// group.Middleware(ghttp.MiddlewareHandlerResponse)
 
@@ -262,8 +267,14 @@ var (
 					operation_log.NewV1(),
 					askai.NewV1(),
 					tags.NewV1(),
+					video_outreach_ctrl.NewV1(),
 				)
 			})
+
+			// Public video landing page (no auth — recipients click from email)
+			s.BindHandler("GET:/landing/video", video_outreach_ctrl.ServeLandingPage)
+
+			// SPA fallback
 
 			// Add PHP-FPM middleware
 			s.BindMiddleware("/roundcube/*any", func(r *ghttp.Request) {
